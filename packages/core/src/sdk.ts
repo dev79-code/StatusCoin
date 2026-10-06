@@ -22,7 +22,7 @@ import {
 import { createInitializeInstruction, pack, type TokenMetadata } from "@solana/spl-token-metadata";
 
 export const STATUS_PROGRAM_ID = new PublicKey(
-  process.env.NEXT_PUBLIC_STATUS_PROGRAM_ID || process.env.STATUS_PROGRAM_ID || "CEZg25V3N7Z6Qwe9Zi9sH7xoWjan3JFMN3JeHNpZUaNm",
+  process.env.NEXT_PUBLIC_STATUS_PROGRAM_ID || process.env.STATUS_PROGRAM_ID || "FhCxrWkkKHptVi5zdrT8iHSZTRRjP9E11q9mrTUqNiHR",
 );
 
 export const FLAG_BLOCKED = 1;

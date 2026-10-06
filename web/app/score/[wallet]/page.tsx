@@ -135,6 +135,7 @@ function OnchainLine({ r }: { r: ScoreResponse }) {
   let text: string, color: string;
   if (r.score === null) { text = "Unscored wallets aren't written on-chain — probation rules apply."; color = "var(--unranked)"; }
   else if (o.score !== null && !o.pending) { text = `On the list · score ${o.score} is live on-chain`; color = "var(--accent)"; }
+  else if (o.pending && o.publisherOnline === false) { text = "Scored · on-chain list opens soon"; color = "var(--muted)"; }
   else if (o.pending) { text = "Queued · your score goes on-chain in the next batch (≈1 min)"; color = "var(--elite)"; }
   else { text = "Not on-chain yet"; color = "var(--muted)"; }
   return (

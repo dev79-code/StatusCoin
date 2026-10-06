@@ -9,6 +9,7 @@ export interface OnchainState {
   flags: number;
   publishedAt: number | null;
   pending: boolean; // queued for the next publish batch
+  publisherOnline?: boolean; // false until the program + registry are live
 }
 export interface ScoreResponse extends StatusResult {
   onchain: OnchainState;

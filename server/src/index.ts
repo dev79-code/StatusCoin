@@ -39,7 +39,7 @@ app.get<{ Params: { wallet: string } }>("/v1/score/:wallet", async (req, reply) 
   try {
     const r = await scoreWallet(db, wallet);
     reply.header("cache-control", "public, max-age=60");
-    return { ...r, onchain: onchainState(db.get(wallet)) };
+    return { ...r, onchain: { ...onchainState(db.get(wallet)), publisherOnline: jobs.state.enabled } };
   } catch (e) {
     req.log.error(e);
     return reply.code(502).send({ error: "scoring failed" });

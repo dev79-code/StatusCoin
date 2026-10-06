@@ -96,27 +96,36 @@ docker compose cp api:/data/status.db ./status-$(date +%F).db
 
 **Why `STATUS_API_KEY`?** The backend rate-limits each IP to 60 requests per minute. Vercel renders score pages from a small set of shared IPs, so it would hit that limit quickly. The shared key lets Vercel through while the public stays limited.
 
-## 4. Solana program + registry (devnet first)
+## 4. Solana program + registry (devnet)
 
-From your own machine (Solana CLI + Anchor 0.31):
+The compiled program is committed at `deploy/program/status_hook.so`, so you don't need Rust or Anchor on the droplet. Its program id is the `declare_id!` in `programs/status-hook/src/lib.rs`. The matching **program keypair** stays out of git. Paste it once to `/opt/status/deploy/secrets/program-keypair.json`, then run:
 
 ```bash
-anchor keys sync                      # puts your program id in lib.rs + Anchor.toml
-anchor build && anchor deploy --provider.cluster devnet
-
-cd server
-# registry: admin = your wallet, scorer = the droplet's scorer address (printed by setup-droplet.sh,
-# also in /opt/status/deploy/secrets/scorer.pubkey)
-RPC_URL=https://api.devnet.solana.com \
-ADMIN_KEYPAIR=~/.config/solana/id.json \
-SCORER_PUBKEY=<droplet scorer address> \
-BOOK_CAPACITY=30000 \
-npm run setup-registry
+cd /opt/status && git pull
+bash deploy/deploy-devnet.sh
 ```
 
-Send the scorer address a little SOL to cover fees. About 0.05 SOL covers thousands of publishes, at about 5,000 lamports per batch of 24 wallets. The droplet's publisher picks the registry up on its next tick, and `/health` shows `publisher.enabled: true`.
+The script does the following:
 
-Remember to update `STATUS_PROGRAM_ID` / `NEXT_PUBLIC_STATUS_PROGRAM_ID` everywhere if the program id changed.
+- installs the Solana CLI;
+- creates a **deployer** wallet at `deploy/secrets/deployer.json`, which becomes the program's upgrade authority, so **back it up**;
+- checks the deployer has enough SOL;
+- deploys the program;
+- funds the scorer;
+- creates the registry and score book;
+- points the API at the program.
+
+If the deployer is short on SOL (about 3.8 SOL for a fresh deploy), the script prints its address. Fund it at https://faucet.solana.com and re-run. Every step is skipped if it's already done.
+
+Afterwards, set `NEXT_PUBLIC_STATUS_PROGRAM_ID` on Vercel to the printed id and redeploy. `/health` should then show `publisher.enabled: true`.
+
+**Upgrading the program** after changing the Rust code (on a machine with Solana CLI 2.2+):
+
+```bash
+cargo build-sbf --manifest-path programs/status-hook/Cargo.toml
+cp target/deploy/status_hook.so deploy/program/      # commit + push, git pull on the droplet, then:
+solana -u devnet --keypair deploy/secrets/deployer.json program deploy deploy/program/status_hook.so --program-id <PROGRAM_ID>
+```
 
 ## 5. Auto-deploy the backend from GitHub
 

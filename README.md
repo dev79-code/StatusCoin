@@ -87,7 +87,7 @@ Then open `/launch`, connect a devnet wallet and launch. A single transaction cr
 ## Run the e2e test locally
 
 ```bash
-solana-test-validator --reset --bpf-program CEZg25V3N7Z6Qwe9Zi9sH7xoWjan3JFMN3JeHNpZUaNm target/deploy/status_hook.so
+solana-test-validator --reset --bpf-program FhCxrWkkKHptVi5zdrT8iHSZTRRjP9E11q9mrTUqNiHR target/deploy/status_hook.so
 npm run test:e2e
 ```
 

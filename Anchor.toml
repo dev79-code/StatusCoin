@@ -6,10 +6,10 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-status_hook = "CEZg25V3N7Z6Qwe9Zi9sH7xoWjan3JFMN3JeHNpZUaNm"
+status_hook = "FhCxrWkkKHptVi5zdrT8iHSZTRRjP9E11q9mrTUqNiHR"
 
 [programs.localnet]
-status_hook = "CEZg25V3N7Z6Qwe9Zi9sH7xoWjan3JFMN3JeHNpZUaNm"
+status_hook = "FhCxrWkkKHptVi5zdrT8iHSZTRRjP9E11q9mrTUqNiHR"
 
 [provider]
 cluster = "devnet"

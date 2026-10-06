@@ -10,7 +10,7 @@ import {
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token";
 import {
-  FLAG_BLOCKED, bookLookup, buildInitBookTx, buildLaunchTx, fetchGate, ixInitRegistry, registryPda, ixLoosenGate, ixSetScores,
+  FLAG_BLOCKED, bookLookup, buildInitBookTx, buildLaunchTx, fetchGate, ixInitRegistry, registryPda, STATUS_PROGRAM_ID, ixLoosenGate, ixSetScores,
 } from "@status/core/sdk";
 
 const conn = new Connection(process.env.RPC_URL || "http://127.0.0.1:8899", "confirmed");
@@ -106,7 +106,7 @@ async function main() {
   await expect("elite wallet (92) can buy", true, async () => {
     const sig = await transfer(mint, pool, elite.publicKey, T(5_000));
     const tx = await conn.getTransaction(sig, { commitment: "confirmed", maxSupportedTransactionVersion: 0 });
-    const line = tx?.meta?.logMessages?.find((l) => l.includes("CEZg25V3") && l.includes("consumed"));
+    const line = tx?.meta?.logMessages?.find((l) => l.includes(STATUS_PROGRAM_ID.toBase58()) && l.includes("consumed"));
     console.log(`    hook cost: ${line?.match(/consumed (\d+)/)?.[1]} compute units`);
   });
   await expect("low wallet (31) is blocked", false, () => transfer(mint, pool, low.publicKey, T(10)), "ScoreTooLow");

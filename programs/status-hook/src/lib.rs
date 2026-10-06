@@ -28,7 +28,7 @@ use spl_discriminator::SplDiscriminate;
 use spl_tlv_account_resolution::{account::ExtraAccountMeta, seeds::Seed, state::ExtraAccountMetaList};
 use spl_transfer_hook_interface::instruction::ExecuteInstruction;
 
-declare_id!("CEZg25V3N7Z6Qwe9Zi9sH7xoWjan3JFMN3JeHNpZUaNm");
+declare_id!("FhCxrWkkKHptVi5zdrT8iHSZTRRjP9E11q9mrTUqNiHR");
 
 pub const REGISTRY_SEED: &[u8] = b"registry";
 pub const GATE_SEED: &[u8] = b"gate";
