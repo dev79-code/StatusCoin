@@ -1,0 +1,14 @@
+target/
+node_modules/
+.next/
+.env*.local
+test-ledger/
+**/dist/
+*.db
+*.db-*
+.env
+.env.*
+!.env.example
+deploy/.env
+deploy/secrets/
+*.pem

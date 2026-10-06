@@ -1,0 +1,14 @@
+{
+  "name": "status",
+  "private": true,
+  "workspaces": ["packages/*", "web", "server"],
+  "scripts": {
+    "dev:web": "npm run dev -w web",
+    "dev:server": "npm run dev -w server",
+    "build": "npm run build -w web && npm run build -w server",
+    "typecheck": "npm run typecheck -w @status/core && npm run typecheck -w server && npm run typecheck -w web",
+    "lint": "npm run lint -w web",
+    "test:e2e": "npm run e2e -w server"
+  },
+  "engines": { "node": ">=22.13" }
+}

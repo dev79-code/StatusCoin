@@ -1,0 +1,43 @@
+name: Deploy API (droplet)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "server/**"
+      - "packages/core/**"
+      - "deploy/**"
+      - "package-lock.json"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-api
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Redeploy on droplet
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: deploy
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          script: |
+            set -e
+            cd /opt/status
+            git fetch --prune origin
+            git reset --hard origin/main
+            cd deploy
+            docker compose up -d --build
+            docker image prune -f
+
+      - name: Health check
+        run: |
+          for i in $(seq 1 20); do
+            if curl -fsS "${{ vars.API_URL }}/health"; then exit 0; fi
+            sleep 6
+          done
+          echo "API did not become healthy" && exit 1

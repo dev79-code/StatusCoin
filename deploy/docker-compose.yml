@@ -1,0 +1,40 @@
+# Runs on the DigitalOcean droplet:  cd /opt/status/deploy && docker compose up -d --build
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DB_PATH: /data/status.db
+      SCORER_KEYPAIR: /run/secrets/scorer.json
+    volumes:
+      - api-data:/data
+      - ./secrets/scorer.json:/run/secrets/scorer.json:ro
+    expose:
+      - "8080"
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "5" }
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      API_DOMAIN: ${API_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - api
+
+volumes:
+  api-data:
+  caddy-data:
+  caddy-config:

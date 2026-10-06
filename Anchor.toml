@@ -1,0 +1,16 @@
+[toolchain]
+anchor_version = "0.31.1"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.devnet]
+status_hook = "CEZg25V3N7Z6Qwe9Zi9sH7xoWjan3JFMN3JeHNpZUaNm"
+
+[programs.localnet]
+status_hook = "CEZg25V3N7Z6Qwe9Zi9sH7xoWjan3JFMN3JeHNpZUaNm"
+
+[provider]
+cluster = "devnet"
+wallet = "~/.config/solana/id.json"
